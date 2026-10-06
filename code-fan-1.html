@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คืนนี้มีเรื่องจะบอก 🌙</title>
+<meta property="og:title" content="คืนนี้มีเรื่องจะบอก 🌙">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#fff;--bubble:rgba(255,255,255,.14);--pink:#ff5c93}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Mali','Sarabun',system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,#0b1030,#2a1550 60%,#5b2160);overflow:hidden;-webkit-tap-highlight-color:transparent}
+canvas{position:fixed;inset:0;width:100%;height:100%}#fw{z-index:3;pointer-events:none}
+main{position:relative;z-index:2;height:100%;max-width:460px;margin:0 auto;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 16px calc(24px + env(safe-area-inset-bottom,0px));padding-top:calc(130px + env(safe-area-inset-top,0px))}
+#moon{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));right:24px;font-size:54px;z-index:1;filter:drop-shadow(0 0 18px #ffe9a8)}
+#chat{display:flex;flex-direction:column;gap:10px;overflow-y:auto;scrollbar-width:none}
+.b{background:var(--bubble);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:20px 20px 20px 6px;padding:11px 16px;max-width:85%;line-height:1.6;white-space:pre-line;animation:in .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px) scale(.9)}}
+.b.typing{letter-spacing:4px}
+.ask{align-self:center;text-align:center;max-width:100%;width:100%;margin-top:8px}
+.ask h2{font-size:20px;margin-bottom:6px}.ask p{margin-bottom:10px}
+.ring{font-size:60px;animation:glow 1.6s infinite}
+@keyframes glow{50%{transform:scale(1.15) rotate(8deg);filter:drop-shadow(0 0 16px #ffd36b)}}
+.btns{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+button{font-family:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;padding:13px 26px;font-size:17px;color:#fff;transition:transform .15s}
+button:active{transform:scale(.94)}
+.yes,.pk{background:linear-gradient(135deg,var(--pink),#ff9ab9);box-shadow:0 0 22px rgba(255,92,147,.6)}
+#no{background:rgba(255,255,255,.18)}#no.run{position:fixed;z-index:30;transition:left .25s,top .25s}
+.opt{display:block;width:100%;margin:7px 0;background:rgba(255,255,255,.16)}
+.hide{display:none!important}
+.shs{position:fixed;left:-70px;z-index:20;font-size:46px;background:none;padding:0;animation:fly linear forwards;filter:drop-shadow(0 0 10px #ffe9a8)}
+@keyframes fly{to{transform:translateX(calc(100vw + 150px)) rotate(20deg)}}
+.hold{width:130px;height:130px;border-radius:50%;font-size:48px;touch-action:none;user-select:none;-webkit-user-select:none;background:radial-gradient(circle,#ff7ba3,#c2185b);box-shadow:0 0 calc(10px + var(--p,0)*.5px) rgba(255,92,147,.9);transform:scale(calc(1 + var(--p,0)/300))}
+.meter{height:16px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd84d,#ff5c93);transition:width 3s}
+.big{font-size:80px;font-weight:700}
+.grow{animation:pl .8s infinite}@keyframes pl{50%{transform:scale(1.12)}}
+.pet{position:fixed;left:10px;top:calc(12px + env(safe-area-inset-top,0px));width:100px;z-index:2;pointer-events:none;animation:flt 3s ease-in-out infinite}
+@keyframes flt{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}
+.pet svg{width:100%;overflow:visible;display:block;filter:drop-shadow(0 0 14px #ffd84d)}
+#bsay{position:fixed;left:112px;top:calc(30px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.92);color:#3b1d5a;border-radius:16px;padding:7px 12px;font-size:13px;font-weight:600;max-width:55vw;z-index:2}
+.armL{transform-origin:22px 70px;animation:wv .6s infinite alternate}.armR{transform-origin:98px 70px;animation:wv .6s .3s infinite alternate-reverse}
+@keyframes wv{from{transform:rotate(-18deg)}to{transform:rotate(22deg)}}
+.eye{transform-box:fill-box;transform-origin:center;animation:bl 3.2s infinite}
+@keyframes bl{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.m-sad,.e-h{display:none}
+body.sad .m-happy{display:none}body.sad .m-sad{display:block}
+body.happy .eye{display:none}body.happy .e-h{display:block}body.happy .pet{animation-duration:.8s}
+</style></head>
+<body>
+<canvas id="sky"></canvas><canvas id="fw"></canvas>
+<div id="moon">🌙</div>
+<div id="bsay">สวัสดี~ ฉันคือดาวน้อย ✨</div>
+<div class="pet"><svg viewBox="0 0 120 120">
+<g class="armL"><circle cx="16" cy="72" r="9" fill="#ffd84d"/></g><g class="armR"><circle cx="104" cy="72" r="9" fill="#ffd84d"/></g>
+<polygon points="60,14 72.9,44.2 105.7,47.2 80.9,68.8 88.2,100.8 60,84 31.8,100.8 39.1,68.8 14.3,47.2 47.1,44.2" fill="#ffd84d" stroke="#ffd84d" stroke-width="14" stroke-linejoin="round"/>
+<ellipse class="eye" cx="50" cy="60" rx="3.8" ry="5.5" fill="#4a2038"/><ellipse class="eye" cx="70" cy="60" rx="3.8" ry="5.5" fill="#4a2038"/>
+<g class="e-h" fill="none" stroke="#4a2038" stroke-width="3" stroke-linecap="round"><path d="M44 62q6-9 11 0"/><path d="M65 62q6-9 11 0"/></g>
+<circle cx="42" cy="70" r="5" fill="#ff9ebb" opacity=".7"/><circle cx="78" cy="70" r="5" fill="#ff9ebb" opacity=".7"/>
+<path class="m-happy" d="M53 70q7 8 14 0" fill="none" stroke="#4a2038" stroke-width="2.5" stroke-linecap="round"/>
+<path class="m-sad" d="M54 76q6-7 12 0" fill="none" stroke="#4a2038" stroke-width="2.5" stroke-linecap="round"/>
+</svg></div>
+<main><div id="chat"></div></main>
+<script>
+/* ===== แก้ตรงนี้ ===== */
+const HER="เธอ", ME="ฉัน";
+const LINES=[`สวัสดีคืนนี้ ${HER} 🌙`,`ดาวคืนนี้สวยดีเนอะ ✨`,`แต่ในสายตา${ME} ยังไม่สวยเท่ารอยยิ้มของ${HER}เลย`,`${ME}มีเรื่องสำคัญอยากบอก… แต่ต้องผ่านด่านดาวก่อนนะ 😏`];
+const ASK=`${HER} ยอมเป็นแฟนกับ${ME}ไหม?`;
+const THANKS=`ขอบคุณที่ตอบตกลงนะ 🥰\nจากนี้ไปดาวทุกดวงจะเป็นพยานให้เรา 💕`;
+/* ==================== */
+const $=id=>document.getElementById(id),chat=$("chat"),talk=t=>$("bsay").textContent=t;
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ดาวระยิบระยับ + ดาวตก */
+const sky=$("sky"),sx=sky.getContext("2d");let stars=[],shoot=[];
+function size(){sky.width=innerWidth;sky.height=innerHeight;stars=Array.from({length:130},()=>({x:Math.random()*sky.width,y:Math.random()*sky.height,r:Math.random()*1.6+.3,p:Math.random()*6}))}
+addEventListener("resize",size);size();
+(function loop(t){sx.clearRect(0,0,sky.width,sky.height);
+  stars.forEach(s=>{sx.globalAlpha=.4+.6*Math.abs(Math.sin(t/900+s.p));sx.fillStyle="#fff";sx.beginPath();sx.arc(s.x,s.y,s.r,0,7);sx.fill()});
+  if(Math.random()<.008)shoot.push({x:Math.random()*sky.width,y:0,l:1});
+  shoot=shoot.filter(s=>{s.x-=7;s.y+=5;s.l-=.012;sx.globalAlpha=s.l;sx.strokeStyle="#fff";sx.lineWidth=2;sx.beginPath();sx.moveTo(s.x,s.y);sx.lineTo(s.x+50,s.y-35);sx.stroke();return s.l>0});
+  requestAnimationFrame(loop)})(0);
+
+/* พลุ */
+const fc=$("fw"),fx=fc.getContext("2d");let ps=[];
+function fsz(){fc.width=innerWidth;fc.height=innerHeight}addEventListener("resize",fsz);fsz();
+function fireworks(){for(let k=0;k<3;k++){const x=Math.random()*fc.width,y=Math.random()*fc.height*.5+40,h=Math.random()*360;for(let i=0;i<50;i++){const a=i/50*6.28,v=Math.random()*4+1.5;ps.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,h})}}}
+(function fl(){fx.clearRect(0,0,fc.width,fc.height);ps=ps.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.l-=.012;fx.globalAlpha=Math.max(p.l,0);fx.fillStyle=`hsl(${p.h},100%,70%)`;fx.beginPath();fx.arc(p.x,p.y,2.4,0,7);fx.fill();return p.l>0});requestAnimationFrame(fl)})();
+
+/* แชท + แผงด่าน */
+async function say(t){const d=document.createElement("div");d.className="b typing";d.textContent="• • •";chat.appendChild(d);await wait(900);d.className="b";d.textContent=t;chat.scrollTop=chat.scrollHeight;await wait(450)}
+function panel(h){const o=chat.querySelector(".ask");if(o)o.remove();const a=document.createElement("div");a.className="b ask";a.innerHTML=h;chat.appendChild(a);chat.scrollTop=chat.scrollHeight;return a}
+const nextBtn=(p,fn)=>{p.insertAdjacentHTML("beforeend",`<div class="btns"><button class="pk">ต่อไป ➡️</button></div>`);p.querySelector(".pk").onclick=fn};
+
+async function start(){for(const l of LINES)await say(l);const p=panel(`<h2>พร้อมไหม?</h2>`);nextBtn(p,s1)}
+
+/* ด่าน 1: แตะดาวตก 3 ดวง (เร็วขึ้นเรื่อยๆ) */
+function s1(){
+  talk("ดาวตกมาแล้ว! แตะเร็ว 🌠");
+  const p=panel(`<h2>🌠 ด่าน 1</h2><p>แตะดาวตก 3 ดวงเพื่อขอพร</p><b id="cnt">0 / 3</b>`);
+  let c=0;const iv=setInterval(()=>{
+    const s=document.createElement("button");s.className="shs";s.textContent="🌠";
+    s.style.top=Math.random()*55+12+"vh";s.style.animationDuration=Math.max(1.3,2.6-c*.5)+"s";
+    s.onclick=()=>{s.remove();c++;$("cnt").textContent=c+" / 3";fireworks();
+      if(c>=3){clearInterval(iv);talk("ขอพรสำเร็จ! ✨");p.querySelector("h2").textContent="✅ ขอพรแล้ว!";nextBtn(p,s2)}else talk(["เก่งมาก!","อีกดวงเดียว!"][c-1])};
+    s.addEventListener("animationend",()=>s.remove());document.body.appendChild(s)},850);
+}
+
+/* ด่าน 2: ถาม-ตอบ */
+async function s2(){
+  talk("ตอบตามใจเลย~ 💭");
+  const p=panel(`<h2>💭 ด่าน 2</h2><p>ถ้า${HER}เป็นดาวสักดวง จะเป็นดวงไหน?</p><div id="ops"></div>`);
+  [["ดวงที่สว่างที่สุด ✨",`ฉันว่าก็สว่างจริงๆ นั่นแหละ`],["ดวงที่อยู่ใกล้ฉันที่สุด 💫",`โอ้โห… ตอบแบบนี้ใจเต้นเลย 💓`],["ดวงที่ทำให้ใจเต้น 💓",`ตรงกับที่ฉันรู้สึกเลย 🥹`]].forEach(([t,r])=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.onclick=async()=>{p.remove();await say(r);const q=panel(`<p>ผ่านด่านนี้แล้ว!</p>`);nextBtn(q,s3)};$("ops").appendChild(b)});
+}
+
+/* ด่าน 3: กดค้าง 3 วินาที ชาร์จหัวใจ */
+function s3(){
+  talk("กดค้างไว้ อย่าปล่อยนะ! 💓");
+  const p=panel(`<h2>💓 ด่าน 3</h2><p>กดค้างที่หัวใจ 3 วินาที เพื่อชาร์จพลัง<br>ห้ามปล่อยก่อนนะ!</p><button class="hold" id="h">💗</button><p id="hp" style="margin-top:8px">0%</p>`);
+  const h=$("h");let v=0,t=null;
+  const stop=()=>{if(t){clearInterval(t);t=null}if(v<100){v=0;h.style.setProperty("--p",0);$("hp").textContent=v?"ปล่อยซะแล้ว เริ่มใหม่นะ 😝":"0%";}};
+  const startH=e=>{e.preventDefault();if(t||v>=100)return;t=setInterval(()=>{v+=100/60;h.style.setProperty("--p",v);$("hp").textContent=Math.floor(v)+"%";talk(v<50?"อดทนไว้~":"ใกล้แล้ว!");
+    if(v>=100){clearInterval(t);t=null;fireworks();countdown()}},50)};
+  h.addEventListener("pointerdown",startH);["pointerup","pointerleave","pointercancel"].forEach(ev=>h.addEventListener(ev,stop));
+  h.addEventListener("contextmenu",e=>e.preventDefault());
+}
+async function countdown(){
+  for(const x of [3,2,1]){panel(`<p>กำลังเปิดคำถามสำคัญ…</p><div class="big">${x}</div>`);talk("ใจเต้นแรงมาก 💓");await wait(900)}
+  s4();
+}
+
+/* ด่านสุดท้าย: ขอเป็นแฟน — ปุ่มไม่วิ่งได้ 3 ครั้ง แล้วบังคับตกลง */
+function s4(){
+  talk("ตอบดีๆ นะ… 🥺");
+  const p=panel(`<div class="ring">💍</div><h2>${ASK}</h2><div class="btns"><button class="yes" id="y">ตกลง 💖</button><button id="no">ไม่</button></div>`);
+  const no=$("no"),y=$("y");let jumps=0,last=0;
+  const force=()=>{no.remove();document.body.classList.remove("sad");talk("ไม่มีทางเลือกแล้วน้า~ กดตกลงเลย 💖");y.style.fontSize="26px";y.classList.add("grow")};
+  const jump=e=>{if(e&&e.cancelable)e.preventDefault();const now=Date.now();if(now-last<450)return;last=now;
+    if(jumps>=3){force();return}jumps++;
+    document.body.appendChild(no);no.classList.add("run");
+    no.style.left=Math.random()*(innerWidth-no.offsetWidth-20)+10+"px";no.style.top=Math.random()*(innerHeight-no.offsetHeight-20)+10+"px";
+    document.body.classList.add("sad");talk(["จับให้ได้สิ 😝","ดาวมองอยู่นะ 🌟","เหลืออีกนิดเดียว…"][jumps-1]);
+    y.style.fontSize=17+jumps*4+"px";if(jumps===3)setTimeout(force,1600)};
+  no.onmouseenter=jump;no.ontouchstart=jump;no.onclick=jump;
+  y.onclick=()=>{no.remove();document.body.classList.remove("sad");document.body.classList.add("happy");talk("เย้~ รักที่สุดเลย 💖");fireworks();
+    const f=panel(`<div class="ring">🥰</div><h2>กำลังคำนวณความรัก…</h2><div class="meter"><i id="mt"></i></div><b id="pc">0%</b>`);
+    requestAnimationFrame(()=>$("mt").style.width="100%");
+    let n=0;const iv=setInterval(()=>{n+=2;$("pc").textContent=Math.min(n,100)+"%";if(n>=100){clearInterval(iv);
+      panel(`<div class="ring">💖</div><h2>รักเต็ม 100% ✅</h2><p>${THANKS}</p>`);setInterval(fireworks,1600)}},60)};
+}
+start();
+</script></body></html>
